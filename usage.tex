@@ -1,0 +1,230 @@
+\documentclass{peterlitsdoc}
+\newcommand{\vb}{\verb}
+
+\title{\vb|peterlitsdoc|文档类}
+\author{Peterlits Zo}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{前言}
+
+出于一些原因，我开始使用markdown来写文档，然后使用pandoc来转换为PDF文档。
+
+但是转换成的PDF文档格式有点不尽人意。
+后来为了更棒的样式，我开始使用Python写了一个filter来操控中间层json数据。
+
+后来python的filter的数据越来越多，比如我在meta data区中写下了很多我平时会
+用到的短命令（比如，添加图片，带标注的段落等等），pandoc会把code block设置为
+单独的一个段，我还递归修改让它依附上上一个段，来让它有着合理的前后间距。
+
+那为什么不直接一开始就写\LaTeX{}文档呢？因为我一开始觉得\LaTeX{}的语法好傻哦，
+后来又看了看Lisp才慢慢看到\LaTeX{}的美感，于是之后我把我写的filter的程序
+中可能会用到的命令和繁琐的设置全部都放到这个文档类中。
+
+这个文档类的目的是写一个面向中文使用的漂亮的小文章。
+
+这个文档类的设计哲学是：命令具体，尽可能覆盖住需要的部分，在它的view层，
+需要做到简洁具体。不应该太过于花里胡哨。
+
+欢迎在\url{https://github.com/PeterlitsZo/peterlitsdoc}中提交issue来让我添
+加一些有用的功能，或者下载相应的\vb|peterlitsdoc.cls|，或者提交pull request
+来改进（欢迎$\sim$）。
+
+基于GPL发布。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{peterlitsdoc所提供命令}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltpara命令和它的快捷命令 - 带标注的段落}
+
+使用\vb|\pltpara{name}{conten}|来做一个peterlitsdoc风格的带注释自然段。
+\begin{pltrun}
+\pltpara{测试}{测试}
+\end{pltrun}
+
+还定义了\vb|\pltrit|和\verb|\pltnte|来作为订正和批注命令。
+\begin{pltrun}
+\pltrit{测试}
+\pltnte{测试}
+\end{pltrun}
+
+命令是可以叠加的。
+\begin{pltrun}
+\pltnte{\pltrit{\pltnte{测试}改错}批注}
+\end{pltrun}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltendant命令 - 文末的作者信息}
+
+使用类似于\vb|\plttendant{yyyy}{mm}{dd}{name}|的格式来定义结束的名字。
+\begin{pltrun}
+这就是《瓦尔登湖》所解释的哲学。
+
+and the winner is: la vie.
+
+\pltendant{2020}{5}{25}{peterlits zo}
+\end{pltrun}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltrun环境 - 显示\LaTeX{}代码}
+
+有的时候，可能需要显示latex的代码和它运行的结果，这里提供了两个
+一摸一样的环境，分别为\vb|pltrun|和\verb|pltRun|，就像这样：
+\begin{pltRun}
+\begin{pltrun}
+\pltnte{测试}
+\end{pltrun}
+\end{pltRun}
+或者
+\begin{pltrun}
+\begin{pltRun}
+\pltrit{测试}
+\end{pltRun}
+\end{pltrun}
+
+使用两个不一样的命令的原因是试图伪嵌套使用这个环境，而出于\LaTeX
+的原因，它会在它匹配的第一个\vb|\end|命令出停止，从而报错。
+所以两个一样的命令（除了大小写不一样之外）的目的就是为了嵌套使用。
+实际使用的话其实用哪个的效果都是一摸一样的。
+
+不过，伪嵌套也最多能够嵌套两层，如果想嵌套多层的话，还是应该在
+拷贝下来的\vb|peterlitsdoc.cls|中更改来拷贝出更多的命令。（不过
+应该没有人这么干吧）
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltpic命令 - 显示图片}
+
+使用]\vb|\pltpic|来显示图片，接受的参数是文件名，标题和引用名。
+需要注意的是，浮动体内不能放在盒子里。
+
+图\ref{head}的相应代码是：
+
+\begin{lstlisting}
+图\ref{head}的相应代码是：
+
+\pltpic[0.4]{./temp.jpg}{头像}{head}
+\end{lstlisting}
+
+\pltpic[0.4]{./temp.jpg}{头像}{head}
+
+其中命令\vb|\pltpic[width]{path}{title}{refname}|有一个可选参数，
+默认为0.85，表示关于整个文本区的比例宽度。\vb|path|则是它的文件路径。
+\vb|title|是它的小标题，而\vb|refname|是引用名字，可以被\vb|\ref|
+命令调用得到对应的序号。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{颜色}
+
+提供了一系列简单的颜色：
+
+\begin{pltrun}
+\pltred   红色\pltrule
+\pltblack 黑色\pltrule
+\pltblue  蓝色\pltrule
+\pltgray  灰色\pltrule
+\end{pltrun}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{peterlitsdoc的更改}
+
+所有的更改都是基于文档类\vb|ctexart|之上。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{边距}
+
+把原来的窄边距更改的稍微大了一些，默认值为\vb|10pt|和
+\vb|a4paper|。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{代码摘录}
+
+原来的代码摘录环境不打算换行，尤其是行内的代码环境。为了
+更棒的排版选择，我认为让它能够换行更加合理一些。
+
+我使用了宏包\vb|lstlisting|来代替默认的\verb|\verb|命令，
+现在使用\verb|\verb|命令的话，底层其实是\vb|lst-inline|，
+会显得更加美观一些。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%s
+
+\subsection{列表}
+
+设置了列表环境\vb|enumerate|的一些长度。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{代码环境}
+
+和\verb|\verb|一样，环境\vb|lstlisting|也是属于宏包
+\vb|listings|，所以说代码环境推荐用\vb|lstlisting|来表
+示代码：
+
+\begin{pltrun}
+如果代码过长的话会换行哦。
+\begin{lstlisting}
+from math import pi
+
+fn main() {
+    using namespace std;
+    cout << "this is a code" << endl;
+
+    0 # return code 0 meaning ok
+}
+\end{lstlisting}
+
+行距，字号都会有一点点变化。
+\end{pltrun}
+
+字号可以刚刚好在正文中包含80个字符。
+\begin{lstlisting}
+--------------------------------------------------------------[ 80 characters ]
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{默认宏包}
+
+提供了一些常用的宏包，这样或许能够摆脱长长的\vb|\usepackage|
+命令。
+
+\begin{enumerate}
+    \item calc          \hfill 在命令中使用数学表达式
+    \item xcolor        \hfill 使用颜色
+    \item mdwlist
+          \hfill 更好看的列表，支持命令\vb|\pltpara|
+    \item verbatim      \hfill 摘录环境，支持命令\vb|\pltrun|
+    \item listings      \hfill 摘录环境，重定义命令\verb|\verb|
+    \item enumitem      \hfill 列表环境
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{编译环境}
+
+作为一个面向中文环境的包，规定了使用XeLaTeX来作为默认的编
+译环境，如果不使用，可能会报错哦。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pltendant{2020}{5}{26}{Peterlits Zo}
+
+\end{document}
+
