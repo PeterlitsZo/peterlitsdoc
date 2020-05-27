@@ -20,6 +20,9 @@ run:
 look:
 	$(viewer) $(name).pdf
 
-.PHONY: fuck
-fuck: run2 look
+.PHONY: funk
+fuck: run look
+
+.PHONY: fuck2
+fuck2: run2 look
 
