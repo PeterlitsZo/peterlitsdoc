@@ -34,8 +34,9 @@
 \RequirePackage{listings}           % for code verb
 \RequirePackage{enumitem}           % for item env
 \RequirePackage{graphicx}           % for picuture
-\RequirePackage[bf, big]{titlesec}  % for picuture
-\RequirePackage{url}                % for picuture
+\RequirePackage[bf, big]{titlesec}  % for better section
+\RequirePackage{url}                % for url
+\RequirePackage{tikz}               % for picuture
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,6 +100,30 @@
             }%
         } * 2}
     \end{flushright}
+}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt todo: todo box
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\plttodo[#1]{{%
+    \nullfont
+    \if\space#1\relax% if the input is a space
+        \normalfont
+        \parbox[c]{3.5ex}{
+            \tikz[scale=0.9]{\draw (0,0) rectangle (2ex,2ex);}
+        }
+    \else
+        \normalfont
+        \parbox[c]{3.5ex}{
+            \tikz[scale=0.9]{
+                \draw (2ex,1.5ex) -- (2ex,2ex) -- (0,2ex) -- (0,0)
+                      -- (2ex,0) -- (2ex,0.5ex);
+                \draw (0.75ex,1.25ex) -- (1.5ex,0.5ex) -- (3ex,2ex);
+            }
+        }
+    \fi
 }}
 
 

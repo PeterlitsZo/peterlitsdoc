@@ -127,6 +127,28 @@ and the winner is: la vie.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{plttodo命令 - todo格子}
+
+使用\vb|plttodo|命令会显示一个to-do框框。应该会比较棒吧。
+格式应该是\vb|\plttodo[<char>]|，如果\vb|char|是非空格的话，
+就是已经完成的框框，如果没有完成的话，就应该把框框搞成空格。
+
+\begin{pltrun}
+使用\plttodo[x]来标注已经完成的对象！
+
+\plttodo[x]喂猫咪
+
+\plttodo[ ]跑步
+
+可以看到，是否是已完成计划，取决于是否有
+至少一个字符和是否第一个为空格。
+
+\plttodo[]  \plttodo[x]  \plttodo[  ]
+\plttodo[ ] \plttodo[aa] \plttodo[ a]
+\end{pltrun}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{颜色}
 
 提供了一系列简单的颜色：
