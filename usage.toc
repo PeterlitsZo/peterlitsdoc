@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}前言}{2}% 
+\contentsline {section}{\numberline {2}peterlitsdoc所提供命令}{2}% 
+\contentsline {subsection}{\numberline {2.1}pltpara命令和它的快捷命令 - 带标注的段落}{2}% 
+\contentsline {subsection}{\numberline {2.2}pltendant命令 - 文末的作者信息}{3}% 
+\contentsline {subsection}{\numberline {2.3}pltrun环境 - 显示\LaTeX {}代码}{3}% 
+\contentsline {subsection}{\numberline {2.4}pltpic命令 - 显示图片}{4}% 
+\contentsline {subsection}{\numberline {2.5}颜色}{4}% 
+\contentsline {section}{\numberline {3}peterlitsdoc的更改}{5}% 
+\contentsline {subsection}{\numberline {3.1}边距}{5}% 
+\contentsline {subsection}{\numberline {3.2}代码摘录}{5}% 
+\contentsline {subsection}{\numberline {3.3}列表}{5}% 
+\contentsline {subsection}{\numberline {3.4}代码环境}{5}% 
+\contentsline {subsection}{\numberline {3.5}默认宏包}{6}% 
+\contentsline {subsection}{\numberline {3.6}编译环境}{6}% 

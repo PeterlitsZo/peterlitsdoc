@@ -49,9 +49,10 @@
     \setlength{\itemsep}{0pt}
     \begin{basedescript} {
         \desclabelstyle{\multilinelabel}
-        \desclabelwidth{\widthof{\fbox{#1}}}
+        \desclabelwidth{\widthof{\fbox{\small #1}}+0.2em}
         }
-        \item [\fbox{#1}] {#2}
+        \setlength{\fboxsep}{0.2em}
+        \item [\fbox{\small #1}] {#2}
     \end{basedescript}
 }
 
@@ -225,7 +226,7 @@
 \newcommand{\pltpic}[4][0.85]{
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=#1\textwidth]{#2}
+        \fbox{\includegraphics[width=#1\textwidth]{#2}}
         \caption{#3}
         \label{#4}
     \end{figure}
