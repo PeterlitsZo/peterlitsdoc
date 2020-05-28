@@ -14,7 +14,7 @@ Run this command to clone, move useful part.
 git clone https://github.com/PeterlitsZo/peterlitsdoc --depth 1
 mv peterlitsdoc/peterlitsdoc.cls .
 mv peterlitsdoc/makefile .
-rm -r peterlitsdoc
+rm -rf peterlitsdoc
 ```
 
 运行上面的命令，克隆、移动`cls`文件（格式定义）和`makefile`文件（快捷命令）。
