@@ -147,6 +147,26 @@ and the winner is: la vie.
 \plttodo[ ] \plttodo[aa] \plttodo[ a]
 \end{pltrun}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltbox环境 - 表格，或者选项}
+
+定义了\vb|pltbox|环境，可以用来更好的定义制表符环境。
+因为是在\vb|tabbing|的外面新添加了一个命令\vb|\col|所以说
+基本上一样的。可以自己谷歌一下\vb|tabbing|。
+
+\begin{pltrun}
+\begin{pltbox}
+\col{3}{1}\=\col{3}{1}\=\col{3}{1}\kill
+A. this   \>B. that   \>C. help   \\
+\plttodo[ ]apple                  \>
+\plttodo[x]water                  \>
+\plttodo[ ]kiss                   \\
+\end{pltbox}
+\end{pltrun}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{颜色}

@@ -79,6 +79,25 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt box: good box
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength{\plt@box@width}
+
+\newcommand{\plt@box@col}[2]{{
+    \setlength{\plt@box@width}{\textwidth * #2 / #1}
+    \hspace{\plt@box@width}
+}}
+
+\newenvironment{pltbox}{
+    \def\col{\plt@box@col}
+    \begin{tabbing}
+}{
+    \end{tabbing}
+    \def\col\undefined
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plt endanthor: end anthor mark
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
