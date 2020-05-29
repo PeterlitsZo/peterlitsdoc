@@ -130,21 +130,30 @@ and the winner is: la vie.
 \subsection{plttodo命令 - todo格子}
 
 使用\vb|plttodo|命令会显示一个to-do框框。应该会比较棒吧。
-格式应该是\vb|\plttodo[<char>]|，如果\vb|char|是非空格的话，
+格式应该是\vb|\plttodo[<char>]|，如果\vb|char|是\vb|v|的话，
 就是已经完成的框框，如果没有完成的话，就应该把框框搞成空格。
+如果处于叠加态的话，就应该把\vb|char|设置为\vb|x|，这个时候，
+它是一个半完成没有特别完成的状态中。如果是其他情况下的话，
+那它就是一种不合法的状态。显示为有问号的框框。
+
+因为可能会经常用到，它有一个别名，是\vb|\pltt|。
 
 \begin{pltrun}
-使用\plttodo[x]来标注已经完成的对象！
+使用\plttodo[v]来标注已经完成的对象！
+使用\plttodo[x]来标注快完成的对象。
 
-\plttodo[x]喂猫咪
+\plttodo[v]喂猫咪
+
+\plttodo[x]做数学作业
 
 \plttodo[ ]跑步
 
-可以看到，是否是已完成计划，取决于是否有
-至少一个字符和是否第一个为空格。
+它会比较第一个字符，然后根据第一个字符
+来显示不同的内容。
 
-\plttodo[]  \plttodo[x]  \plttodo[  ]
-\plttodo[ ] \plttodo[aa] \plttodo[ a]
+\pltt[]   \pltt[x]  \pltt[  ] \pltt[ ]
+\pltt[aa] \pltt[ a] \pltt[v]  \pltt[vv]
+\pltt[ v]
 \end{pltrun}
 
 

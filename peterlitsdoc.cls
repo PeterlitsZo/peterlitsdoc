@@ -130,20 +130,44 @@
     \nullfont
     \if\space#1\relax% if the input is a space
         \normalfont
-        \parbox[c]{3.5ex}{
+        \hspace{0.1ex}
+        \parbox[c]{2.8ex}{
             \tikz[scale=0.9]{\draw (0,0) rectangle (2ex,2ex);}
         }
-    \else
+	\else\if v#1\relax% if the char is 'v'
         \normalfont
-        \parbox[c]{3.5ex}{
+        \hspace{0.1ex}
+        \parbox[c]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (2ex,1.5ex) -- (2ex,2ex) -- (0,2ex) -- (0,0)
                       -- (2ex,0) -- (2ex,0.5ex);
                 \draw (0.75ex,1.25ex) -- (1.5ex,0.5ex) -- (3ex,2ex);
             }
         }
-    \fi
+    \else\if x#1\relax% if the char is 'x'
+        \normalfont
+        \hspace{0.1ex}
+        \parbox[c]{2.8ex}{
+            \tikz[scale=0.9]{
+                \draw (1.5ex,2ex) -- (0,2ex) -- (0,0) -- (2ex,0)
+                      -- (2ex,0.5ex);
+                \draw (0.75ex,1.25ex) -- (1.5ex,0.5ex) -- (3ex,2ex);
+                \draw (1.75ex,1.75ex) -- (2.75ex,0.75ex);
+            }
+        }
+    \else
+        \normalfont
+        \hspace{0.1ex}
+        \parbox[c]{2.8ex}{
+            \tikz[scale=0.9]{
+                \draw (0,0) rectangle (2ex,2ex);
+                \node at (1ex,1ex) {?};
+            }
+        }
+    \fi\fi\fi
 }}
+
+\newcommand{\pltt}{\plttodo}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
