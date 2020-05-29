@@ -1,3 +1,4 @@
+
 name = usage
 viewer = chrome.exe
 
@@ -26,4 +27,3 @@ fuck: run look
 
 .PHONY: fuck2
 fuck2: run2 look
-

@@ -8,7 +8,7 @@ def main(cls:str, makefile: str):
         cls_file.write(cls)
 
 
-makefile_str = f"""
+makefile_str = r"""
 name = {}
 viewer = {}
 
@@ -40,7 +40,7 @@ fuck2: run2 look
 """
 
 
-cls_str = f"""
+cls_str = r"""
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{peterlitsdoc}
   [2020/05/25 0.0.1 Peterlits Document]
@@ -427,6 +427,6 @@ cls_str = f"""
 """
 
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     main(cls_str, makefile_str)
 
