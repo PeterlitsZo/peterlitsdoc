@@ -1,5 +1,24 @@
-def main(cls:str, makefile: str):
-    choice = input("[i]nstall, or [u]pdateself > "
+def main(cls:str, makefile: str, install: str):
+    choice = input("[i]nstall, or [u]pdateself > ")
+    if choice in ("install", "i"):
+        with open("makefile", "w") as makefile_file:
+            makefile_file.write(makefile.format(
+                input("enter the main tex's name > "),
+                input("enter the viewer to see the pdf file > ")
+            ))
+        with open("peterlitsdoc.cls", "w") as cls_file:
+            cls_file.write(cls)
+    elif choice in ("updateself", "u"):
+        with open("install.py", "w") as install_file:
+            install_file.write(install.format(
+            ))
+    else:
+        print("vaild choice is: install, i, updateself, u")
+
+
+install_str = r'''
+def main(cls:str, makefile: str, install: str):
+    choice = input("[i]nstall, or [u]pdateself > ")
     if choice in ("install", "i"):
         with open("makefile", "w") as makefile_file:
             makefile_file.write(makefile.format(
@@ -12,6 +31,22 @@ def main(cls:str, makefile: str):
         pass
     else:
         print("vaild choice is: install, i, updateself, u")
+
+''' + r"""
+install_str = r'''
+{}
+'''
+""" + r'''
+
+makefile_str = r"""
+{}
+"""
+
+cls_str = r"""
+{}
+"""
+
+'''
 
 
 makefile_str = r"""
@@ -434,5 +469,5 @@ cls_str = r"""
 
 
 if __name__ == "__main__":
-    main(cls_str, makefile_str)
+    main(cls_str, makefile_str, install_str)
 
