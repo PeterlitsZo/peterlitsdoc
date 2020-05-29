@@ -37,6 +37,7 @@
 \RequirePackage[bf, big]{titlesec}  % for better section
 \RequirePackage{url}                % for url
 \RequirePackage{tikz}               % for picuture
+\RequirePackage{hyperref}           % for better ref!
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,6 +107,7 @@
     \def\plt@endant@width{\widthof{\maxof{\plt@endant@data}{{#4}}}}
 
     \vspace{5em}
+    \mbox{}
     \vfill
     \begin{flushright}
         \parbox[b]{\plt@endant@width}{%
