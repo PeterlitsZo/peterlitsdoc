@@ -1,3 +1,5 @@
+
+
 def main(cls:str, makefile: str, install: str):
     choice = input("[i]nstall, or [u]pdateself > ")
     if choice in ("install", "i"):
@@ -10,19 +12,28 @@ def main(cls:str, makefile: str, install: str):
             cls_file.write(cls)
     elif choice in ("updateself", "u"):
         with open("install.py", "w") as install_file:
-            install_file.write(install
-                .format(quto="'")
-                .format(
-                    install,
-                    open("makefile", "r").read(),
-                    open("peterlitsdoc.cls", "r").read()
-                )
-            )
+            install_file.write(fuckquto(install).format(
+                install,
+                open("makefile", "r").read(),
+                open("peterlitsdoc.cls", "r").read()
+            ))
+        print("remember, rewrite the makefile's string")
     else:
         print("vaild choice is: install, i, updateself, u")
+
+
+def fuckquto(string: str):
+    index = string.find("<quto")
+    while index != -1:
+        if string[index+1:].startswith("quto>"):
+            string = string[:index] + "'" + string[index+6:]
+        index = string.find("<quto", index + 1)
+    return string
 
 
 install_str = r'''
+
+
 def main(cls:str, makefile: str, install: str):
     choice = input("[i]nstall, or [u]pdateself > ")
     if choice in ("install", "i"):
@@ -35,21 +46,28 @@ def main(cls:str, makefile: str, install: str):
             cls_file.write(cls)
     elif choice in ("updateself", "u"):
         with open("install.py", "w") as install_file:
-            install_file.write(install
-                .format(quto="'")
-                .format(
-                    install,
-                    open("makefile", "r").read(),
-                    open("peterlitsdoc.cls", "r").read()
-                )
-            )
+            install_file.write(fuckquto(install).format(
+                install,
+                open("makefile", "r").read(),
+                open("peterlitsdoc.cls", "r").read()
+            ))
+        print("remember, rewrite the makefile's string")
     else:
         print("vaild choice is: install, i, updateself, u")
 
 
-install_str_part3 = r{quto}''
+def fuckquto(string: str):
+    index = string.find("<quto")
+    while index != -1:
+        if string[index+1:].startswith("quto>"):
+            string = string[:index] + "'" + string[index+6:]
+        index = string.find("<quto", index + 1)
+    return string
+
+
+install_str = r<quto>''
 {}
-{quto}''
+<quto>''
 
 
 makefile_str = r"""
@@ -60,10 +78,14 @@ cls_str = r"""
 {}
 """
 
+if __name__ == "__main__":
+    main(cls_str, makefile_str, install_str)
+
 '''
 
 
 makefile_str = r"""
+
 name = {}
 viewer = {}
 
@@ -92,10 +114,11 @@ fuck: run look
 
 .PHONY: fuck2
 fuck2: run2 look
+
 """
 
-
 cls_str = r"""
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{peterlitsdoc}
   [2020/05/25 0.0.1 Peterlits Document]
@@ -479,9 +502,10 @@ cls_str = r"""
 \titlespacing{\subsection}{0pt}{3em}{1em}
 \titlespacing{\subsubsection}{0pt}{1em}{0em}
 
-"""
 
+"""
 
 if __name__ == "__main__":
     main(cls_str, makefile_str, install_str)
+
 
