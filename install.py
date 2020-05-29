@@ -1,11 +1,17 @@
 def main(cls:str, makefile: str):
-    with open("makefile", "w") as makefile_file:
-        makefile_file.write(makefile.format(
-            input("enter the main tex's name > "),
-            input("enter the viewer to see the pdf file > ")
-        ))
-    with open("peterlitsdoc.cls", "w") as cls_file:
-        cls_file.write(cls)
+    choice = input("[i]nstall, or [u]pdateself > "
+    if choice in ("install", "i"):
+        with open("makefile", "w") as makefile_file:
+            makefile_file.write(makefile.format(
+                input("enter the main tex's name > "),
+                input("enter the viewer to see the pdf file > ")
+            ))
+        with open("peterlitsdoc.cls", "w") as cls_file:
+            cls_file.write(cls)
+    elif choice in ("updateself", "u"):
+        pass
+    else:
+        print("vaild choice is: install, i, updateself, u")
 
 
 makefile_str = r"""
