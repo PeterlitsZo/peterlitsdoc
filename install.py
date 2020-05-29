@@ -11,11 +11,10 @@ def main(cls:str, makefile: str, install: str):
     elif choice in ("updateself", "u"):
         with open("install.py", "w") as install_file:
             install_file.write(install
-                .replace("<`'`>", "'")
-                .replace("<<'>>", "<`'`>")
+                .format(quto="'")
                 .format(
                     install,
-                    open("makefile", "r").read()
+                    open("makefile", "r").read(),
                     open("peterlitsdoc.cls", "r").read()
                 )
             )
@@ -36,18 +35,21 @@ def main(cls:str, makefile: str, install: str):
             cls_file.write(cls)
     elif choice in ("updateself", "u"):
         with open("install.py", "w") as install_file:
-            install_file.write(install.replace("<<'>>", "'").format(
-                install,
-                open("makefile", "r").read()
-                open("peterlitsdoc.cls", "r").read()
-            ))
+            install_file.write(install
+                .format(quto="'")
+                .format(
+                    install,
+                    open("makefile", "r").read(),
+                    open("peterlitsdoc.cls", "r").read()
+                )
+            )
     else:
         print("vaild choice is: install, i, updateself, u")
 
 
-install_str_part3 = r<`'`>''
+install_str_part3 = r{quto}''
 {}
-<`'`>''
+{quto}''
 
 
 makefile_str = r"""
