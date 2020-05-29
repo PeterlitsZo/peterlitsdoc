@@ -6,14 +6,15 @@ clean:
 	-rm *.aux
 	-rm *.log
 	-rm *.toc
-
-.PHONY: run2
-run2:
-	xelatex $(name).tex
-	xelatex $(name).tex
+	-rm *.out
 
 .PHONY: run
+run2:
+	xelatex $(name).tex
+
+.PHONY: run2
 run:
+	xelatex $(name).tex
 	xelatex $(name).tex
 
 .PHONY: look
