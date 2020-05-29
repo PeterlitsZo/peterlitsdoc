@@ -39,6 +39,7 @@
 \RequirePackage{tikz}               % for picuture
 \RequirePackage{hyperref}           % for better ref!
 \RequirePackage{float}              % for picture
+\RequirePackage{ifthen}             % for logic
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,6 +124,56 @@
         } * 2}
     \end{flushright}
 }}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt todoenv: todo box env
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{plt@todoenv@coliter}
+\newcounter{plt@todoenv@counter}
+\newcounter{plt@todoenv@colument}
+\newcounter{plt@todoenv@isfirst}
+
+\newcommand{\plt@todoenv@plttodo}{%
+    \stepcounter{plt@todoenv@counter}%
+    \ifthenelse{\value{plt@todoenv@isfirst}=1}{%
+        \setcounter{plt@todoenv@isfirst}{0}%
+    }{%
+        \ifthenelse{\value{plt@todoenv@counter}=\value{plt@todoenv@colument}}{%
+            \setcounter{plt@todoenv@counter}{0}\\%
+        }{%
+            \>%
+        }%
+    }%
+    \plttodo
+}
+
+\newenvironment{plttodoenv}[1]{%
+    \def\t{\plt@todoenv@plttodo}
+    \setcounter{plt@todoenv@coliter}{0}
+    \setcounter{plt@todoenv@counter}{-1}
+    \setcounter{plt@todoenv@colument}{#1}
+    \setcounter{plt@todoenv@isfirst}{1}
+    \begin{pltbox}%
+    \@whilenum\value{plt@todoenv@coliter}<#1\do{%
+        \stepcounter{plt@todoenv@coliter}%
+        \col{#1}{1}%
+        \ifthenelse{\value{plt@todoenv@coliter}=#1}{\kill}{\=}
+    }%
+    \ignorespaces
+}{
+    \end{pltbox}
+    \vspace{-1.2em}
+    {
+        \pltgray
+        \footnotesize
+        \noindent\rule{\textwidth}{0.5pt}\par
+        \vspace{-0.8em}\noindent
+        注：\plttodo[ ]未完成，\plttodo[x]正在完成中，\plttodo[v]已经完成。
+    }
+    \def\t\undefined
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

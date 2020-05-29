@@ -8,6 +8,7 @@
 
 \maketitle
 \tableofcontents
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -125,6 +126,7 @@ and the winner is: la vie.
 \vb|title|是它的小标题，而\vb|refname|是引用名字，可以被\vb|\ref|
 命令调用得到对应的序号。
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{plttodo命令 - todo格子}
@@ -173,6 +175,28 @@ A. this   \>B. that   \>C. help   \\
 \plttodo[x]water                  \>
 \plttodo[ ]kiss                   \\
 \end{pltbox}
+\end{pltrun}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{plttodoenv环境 - 简单的todo列表环境}
+
+有时候想要联合使用\vb|plttodo|和\vb|pltbox|来制作一份漂亮的
+ToDo盒子是经常有的事情，于是我定义了一个简单的环境，
+\vb|plttodoenv|。
+
+它在不仅环境中定义了\vb|\plttodo|的别名 --- \vb|\t|，使用这个
+环境，它还会自动添加ToDo表格应该有的附注，让你能够更加简单随
+心的的使用。
+
+这个环境需要一个参数，来表示todo列表的列数。
+
+\begin{pltrun}
+\begin{plttodoenv}{2}
+\t[ ]喝奶     \t[x]跑步     \t[v]耍
+\t[ ]数学作业 \t[ ]英语作业 \t[x]走
+\end{plttodoenv}
 \end{pltrun}
 
 
