@@ -38,6 +38,7 @@
 \RequirePackage{url}                % for url
 \RequirePackage{tikz}               % for picuture
 \RequirePackage{hyperref}           % for better ref!
+\RequirePackage{float}              % for picture
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,7 +295,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\pltpic}[4][0.85]{
-    \begin{figure}[htbp]
+    \begin{figure}[H]
         \centering
         \fbox{\includegraphics[width=#1\textwidth]{#2}}
         \caption{#3}
