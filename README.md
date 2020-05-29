@@ -8,16 +8,14 @@ Get `usage.pdf` for more infomation.
 
 ## How to use?
 
-Run this command to clone, move useful part.
+Run this command to get useful part.
 
 ```
-git clone https://github.com/PeterlitsZo/peterlitsdoc --depth 1
-mv peterlitsdoc/peterlitsdoc.cls .
-mv peterlitsdoc/makefile .
-rm -rf peterlitsdoc
+wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v0.0.1/install.py
+python3 install.py
 ```
 
-运行上面的命令，克隆、移动`cls`文件（格式定义）和`makefile`文件（快捷命令）。
+运行上面的命令，生成`cls`文件（格式定义）和`makefile`文件（快捷命令）。
 
 ## About makefile
 
