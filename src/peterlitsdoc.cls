@@ -40,6 +40,14 @@
 \RequirePackage{hyperref}           % for better ref!
 \RequirePackage{float}              % for picture
 \RequirePackage{ifthen}             % for logic
+\RequirePackage{settobox}           % for box
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hyperref setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hypersetup{hidelinks}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,6 +66,94 @@
         \setlength{\fboxsep}{0.2em}
         \item [\fbox{\small #1}] {#2}
     \end{basedescript}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt plan
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength{\plt@plan@first@height}
+\newsavebox{\plt@plan@first}
+\newlength{\plt@plan@secon@height}
+\newsavebox{\plt@plan@secon}
+\newlength{\plt@plan@third@height}
+\newsavebox{\plt@plan@third}
+\newlength{\plt@plan@forth@height}
+\newsavebox{\plt@plan@forth}
+\newlength{\plt@plan@maxheight}
+
+\def\plt@plan@item[#1]#2#3#4{{%
+    \setlength{\baselineskip}{0.5\baselineskip}%
+    \par\vspace*{\dimexpr-\parskip}\noindent%
+    \sbox{\plt@plan@first}{\parbox[b]{0.1\textwidth}{\underline{\texttt{#2}}}}%
+    \sbox{\plt@plan@secon}{\parbox[b]{0.2\textwidth}{#3}}%
+    \sbox{\plt@plan@third}{\parbox[b]{0.1\textwidth}{\plttodo[#1]}}%
+    \sbox{\plt@plan@forth}{\parbox[b]{0.6\textwidth}{#4}}%
+    \settoboxheight{\plt@plan@first@height}{\plt@plan@first}%
+    \settoboxheight{\plt@plan@secon@height}{\plt@plan@secon}%
+    \settoboxheight{\plt@plan@third@height}{\plt@plan@third}%
+    \settoboxheight{\plt@plan@forth@height}{\plt@plan@forth}%
+    \setlength{\plt@plan@maxheight}{\maxof{%
+        \maxof{\the\plt@plan@first@height}{\the\plt@plan@secon@height}%
+    }{%
+        \maxof{\the\plt@plan@third@height}{\the\plt@plan@forth@height}%
+    }}%
+    \parbox[b][\the\plt@plan@maxheight+5pt][t]{\textwidth}{%
+        \vspace*{3pt}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
+            \centering\underline{\texttt{#2}}}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.2\textwidth}{%
+            #3}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
+            \centering\plttodo[#1]}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.6\textwidth}{%
+            #4}%
+        \vspace*{2pt}%
+    }%
+}}%
+
+\newenvironment{pltplan}{%
+    \noindent\rule{\textwidth}{0.4pt}%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \par\vspace*{\dimexpr-\parskip-0.2\baselineskip}\noindent%
+        \parbox[b]{0.1\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw (1ex,1ex) circle [radius=1ex];
+            \draw (1ex,1.8ex) -- (1ex,1ex) -- (1.8ex,1ex);
+        }}%
+        \parbox[b]{0.2\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw [fill] (0,0.2ex) circle [radius=0.2pt];
+            \draw [fill] (0,1ex) circle [radius=0.2pt];
+            \draw [fill] (0,1.8ex) circle [radius=0.2pt];
+            \draw (0.4ex,0.2ex) -- (2ex,0.2ex);
+            \draw (0.4ex,1ex) -- (2ex,1ex);
+            \draw (0.4ex,1.8ex) -- (2ex,1.8ex);
+        }}%
+        \parbox[b]{0.1\textwidth}{\centering%
+            \plttodo[v]%
+        }%
+        \parbox[b]{0.6\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw [fill] (0ex,1ex) circle [radius=0.2pt];
+            \draw [fill] (1ex,1ex) circle [radius=0.2pt];
+            \draw [fill] (2ex,1ex) circle [radius=0.2pt];
+        }}%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \par\vspace*{\dimexpr-\parskip-0.2\baselineskip}\noindent%
+        {\pltgray\rule{\textwidth}{0.4pt}}%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \def\item{\plt@plan@item}%
+}{%
+    \par\vspace*{\dimexpr-\parskip-0.5\baselineskip}\noindent%
+        \rule{\textwidth}{0.4pt}%
+    \par\vspace*{\dimexpr-\parskip-0.4\baselineskip}\noindent{%
+        \pltgray\footnotesize%
+        注：\plttodo[ ]未完成，\plttodo[x]正在完成中，\plttodo[v]已经完成。%
+    }%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \def\item\undefined%
 }
 
 
@@ -185,13 +281,13 @@
     \if\space#1\relax% if the input is a space
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{\draw (0,0) rectangle (2ex,2ex);}
         }
 	\else\if v#1\relax% if the char is 'v'
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (2ex,1.5ex) -- (2ex,2ex) -- (0,2ex) -- (0,0)
                       -- (2ex,0) -- (2ex,0.5ex);
@@ -201,7 +297,7 @@
     \else\if x#1\relax% if the char is 'x'
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (1.5ex,2ex) -- (0,2ex) -- (0,0) -- (2ex,0)
                       -- (2ex,0.5ex);
@@ -212,7 +308,7 @@
     \else
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (0,0) rectangle (2ex,2ex);
                 \node at (1ex,1ex) {?};
@@ -381,4 +477,5 @@
 \titlespacing{\section}{0pt}{7em}{2em}
 \titlespacing{\subsection}{0pt}{3em}{1em}
 \titlespacing{\subsubsection}{0pt}{1em}{0em}
+
 
