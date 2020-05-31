@@ -1,4 +1,4 @@
-\documentclass{peterlitsdoc}
+\documentclass{../src/peterlitsdoc}
 \newcommand{\vb}{\verb}
 
 \title{\vb|peterlitsdoc|文档类}
@@ -116,10 +116,10 @@ and the winner is: la vie.
 \begin{lstlisting}
 图\ref{head}的相应代码是：
 
-\pltpic[0.4]{./temp.jpg}{头像}{head}
+\pltpic[0.4]{./usage.jpg}{头像}{head}
 \end{lstlisting}
 
-\pltpic[0.4]{./temp.jpg}{头像}{head}
+\pltpic[0.4]{./usage.jpg}{头像}{head}
 
 其中命令\vb|\pltpic[width]{path}{title}{refname}|有一个可选参数，
 默认为0.85，表示关于整个文本区的比例宽度。\vb|path|则是它的文件路径。
@@ -199,6 +199,29 @@ ToDo盒子是经常有的事情，于是我定义了一个简单的环境，
 \end{plttodoenv}
 \end{pltrun}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{pltplan环境 - 时间表}
+
+没有想到\vb|pltplan|太大了。我的\vb|pltrun|根本放不下。
+
+总的来说，\vb|pltplan|会生成一个好看的时间表！使用\vb|\item|
+来简单的添加计划项。如：\vb|\item[<OK>]{<time>}{<name>}{<thinking>}|
+
+\begin{lstlisting}
+\begin{pltplan}
+\item[x]{12:33}{跑步}{呼呼$\sim$}
+\item[ ]{1:00}{做英语作业}{}
+\end{pltplan}
+\end{lstlisting}
+
+总之上面的\LaTeX{}代码会生成下面的这份时间表，好看吧，嘻嘻。
+
+\begin{pltplan}
+\item[x]{12:33}{跑步}{呼呼$\sim$}
+\item[ ]{1:00}{做英语作业}{}
+\end{pltplan}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

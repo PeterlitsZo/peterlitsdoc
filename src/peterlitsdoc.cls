@@ -100,7 +100,7 @@
         \maxof{\the\plt@plan@third@height}{\the\plt@plan@forth@height}%
     }}%
     \parbox[b][\the\plt@plan@maxheight+5pt][t]{\textwidth}{%
-        \vspace*{3pt}%
+        \vspace*{5pt}%
         \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
             \centering\underline{\texttt{#2}}}%
         \parbox[b][\the\plt@plan@maxheight][t]{0.2\textwidth}{%
@@ -109,7 +109,6 @@
             \centering\plttodo[#1]}%
         \parbox[b][\the\plt@plan@maxheight][t]{0.6\textwidth}{%
             #4}%
-        \vspace*{2pt}%
     }%
 }}%
 
@@ -311,7 +310,14 @@
         \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (0,0) rectangle (2ex,2ex);
-                \node at (1ex,1ex) {?};
+                \draw (1ex, 0.5ex) -- (1ex,0.75ex)
+                      .. controls (1ex,1ex) and (1.5ex,1ex) ..
+                          (1.5ex,1.2ex)
+                      .. controls (1.5ex,1.75ex) and (1.25ex,1.75ex) ..
+                          (1ex,1.75ex)
+                      .. controls (0.75ex,1.75ex) and (0.5ex,1.75ex) ..
+                          (0.5ex,1.2ex);
+                \fill (1ex,0.25ex) circle [radius=0.1ex];
             }
         }
     \fi\fi\fi
