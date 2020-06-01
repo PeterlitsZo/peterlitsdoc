@@ -41,6 +41,7 @@
 \RequirePackage{float}              % for picture
 \RequirePackage{ifthen}             % for logic
 \RequirePackage{settobox}           % for box
+\RequirePackage{datenumber}         % for date calc
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,6 +69,63 @@
     \end{basedescript}
 }
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt time line
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+
+\newcounter{plt@date@temp}
+\newcounter{plt@date@today}
+\setmydatenumber{plt@date@today}{\the\year}{\the\month}{\the\day}
+\newcounter{plt@date@end}
+\newlength{\plt@date@unit}
+\newlength{\plt@date@tempLength}
+
+\newcommand{\plt@date@daydiff}[3]{%
+    \setmydatenumber{plt@date@temp}{#1}{#2}{#3}%
+    \addtocounter{plt@date@temp}{-\theplt@date@today}%
+}
+
+\newcommand{\plt@date@setend}[3]{%
+    \setmydatenumber{plt@date@end}{#1}{#2}{#3}%
+    \plt@date@daydiff{#1}{#2}{#3}%
+    % assert that the end is bigger than today
+    \setlength{\plt@date@unit}{0.8\textwidth/\theplt@date@temp}
+}
+
+\newcommand{\pltdate}[5][below]{%
+    \plt@date@daydiff{#2}{#3}{#4}%
+    \ifnum\theplt@date@temp > -1%
+        \setlength{\plt@date@tempLength}{\plt@date@unit*\theplt@date@temp}%
+        \fill(\plt@date@tempLength,0) circle [radius=1pt];%
+        \node [#1] at (\the\plt@date@tempLength,0) {\parbox{%
+            \widthof{\footnotesize#2-#3-#4}%
+        }{%
+            \centering\footnotesize#2-#3-#4\par%
+            \fbox{\parbox[t]{\widthof{\footnotesize#2-#3-#4}-2\fboxsep}%
+                {\scriptsize#5}%
+            }%
+        }};
+    \fi%
+}
+
+\newenvironment{plttimeline}[3]{%
+    \def\D{\pltdate}
+    \def\higher{4em}
+    \plt@date@setend{#1}{#2}{#3}%
+    \begin{center}
+    \begin{tikzpicture}
+    \draw (0,0) -- (0.8\textwidth,0);
+    \pltdate[above]{\the\year}{\the\month}{\the\day}{NOW};
+    \pltdate[above]{#1}{#2}{#3}{END};
+}{%
+    \end{tikzpicture}
+    \end{center}
+    \def\D{\undefined}%
+    \def\higher{\undefined}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plt plan
