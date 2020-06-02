@@ -74,58 +74,165 @@
 % plt time line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\makeatletter
-
+% temp counter
 \newcounter{plt@date@temp}
-\newcounter{plt@date@today}
-\setmydatenumber{plt@date@today}{\the\year}{\the\month}{\the\day}
+\newcounter{plt@date@temp@}
+
+% begin and end counter
+\newcounter{plt@date@begin}
 \newcounter{plt@date@end}
+
+% year, month and day counter
+\newcounter{plt@date@year}
+\newcounter{plt@date@month}
+\newcounter{plt@date@day}
+
+% length - the unit length and the temp length
 \newlength{\plt@date@unit}
 \newlength{\plt@date@tempLength}
 
-\newcommand{\plt@date@daydiff}[3]{%
-    \setmydatenumber{plt@date@temp}{#1}{#2}{#3}%
-    \addtocounter{plt@date@temp}{-\theplt@date@today}%
+% turn the counter into yyyy counter, mm counter and dd counter
+\newcommand{\plt@date@toyyyymmdd}[1]{%
+    \setmydatebynumber{#1}{plt@date@year}{plt@date@month}{plt@date@day}%
 }
 
+% set the end
 \newcommand{\plt@date@setend}[3]{%
     \setmydatenumber{plt@date@end}{#1}{#2}{#3}%
-    \plt@date@daydiff{#1}{#2}{#3}%
-    % assert that the end is bigger than today
-    \setlength{\plt@date@unit}{0.8\textwidth/\theplt@date@temp}
 }
 
-\newcommand{\pltdate}[5][below]{%
-    \plt@date@daydiff{#2}{#3}{#4}%
-    \ifnum\theplt@date@temp > -1%
-        \setlength{\plt@date@tempLength}{\plt@date@unit*\theplt@date@temp}%
+% set the begin
+\newcommand{\plt@date@setbegin}[3]{%
+    \setmydatenumber{plt@date@begin}{#1}{#2}{#3}%
+}
+
+% get the unitlength
+\newcommand{\plt@date@getunit}{%
+    \setlength{\plt@date@unit}
+        {0.8\textwidth/(\theplt@date@end-\theplt@date@begin)}%
+}
+
+\newcounter{plt@date@begsep}
+\newcounter{plt@date@endsep}
+
+\newcommand{\plt@date@item}[5][below]{{%
+    %  this - begin %%%
+    \setmydatenumber{plt@date@begsep}{#2}{#3}{#4}%
+    \addtocounter{plt@date@begsep}{-\theplt@date@begin}%
+    %  this - end   %%%
+    \setmydatenumber{plt@date@endsep}{#2}{#3}{#4}%
+    \addtocounter{plt@date@endsep}{-\theplt@date@end}%
+    %  main logic   %%%
+    \ifnum\theplt@date@endsep < 1\ifnum\theplt@date@begsep > -1%
+        \setlength{\fboxsep}{0.3\fboxsep}
+        \setlength{\plt@date@tempLength}{\plt@date@unit*\theplt@date@begsep}%
         \fill(\plt@date@tempLength,0) circle [radius=1pt];%
+        \write16{drawing box}%
         \node [#1] at (\the\plt@date@tempLength,0) {\parbox{%
-            \widthof{\footnotesize#2-#3-#4}%
+            \widthof{\scriptsize#2-#3-#4}%
         }{%
-            \centering\footnotesize#2-#3-#4\par%
-            \fbox{\parbox[t]{\widthof{\footnotesize#2-#3-#4}-2\fboxsep}%
+            \noindent\par%
+            \scriptsize#2-#3-#4\par%
+            \fbox{\parbox[t]{\widthof{\scriptsize#2-#3-#4}-2\fboxsep}%
                 {\scriptsize#5}%
             }%
         }};
-    \fi%
-}
+    \fi\fi%
+}}
 
-\newenvironment{plttimeline}[3]{%
-    \def\D{\pltdate}
+% the basic timeline
+\newenvironment{plttimelinebasic}[8]{%
+    \par\noindent%
+    \def\D{\plt@date@item}
     \def\higher{4em}
-    \plt@date@setend{#1}{#2}{#3}%
+    \plt@date@setbegin{#1}{#2}{#3}%
+    \plt@date@setend{#4}{#5}{#6}%
+    \plt@date@getunit%
     \begin{center}
     \begin{tikzpicture}
     \draw (0,0) -- (0.8\textwidth,0);
-    \pltdate[above]{\the\year}{\the\month}{\the\day}{NOW};
-    \pltdate[above]{#1}{#2}{#3}{END};
+    \D[above]{#1}{#2}{#3}{#7}
+    \D[above]{#4}{#5}{#6}{#8}
 }{%
     \end{tikzpicture}
     \end{center}
     \def\D{\undefined}%
     \def\higher{\undefined}%
 }
+
+\newenvironment{plttimeline}[3]{%
+    \begin{plttimelinebasic}
+        {\the\year}{\the\month}{\the\day}{#1}{#2}{#3}{NOW}{END}
+}{%
+    \end{plttimelinebasic}
+}
+
+\newcounter{plt@date@temp@fouritem}
+
+\newcommand{\plt@date@four@item}[5][below]{%
+    \immediate\write16{get the first box}
+    \setmydatenumber{plt@date@temp@fouritem}{#2}{#3}{#4}
+    \immediate\write16{begin to get the yyyy/mm/dd}
+    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
+    \immediate\write16{end to get the yyyy/mm/dd}
+    \plt@date@item[#1]
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, B}
+
+    \immediate\write16{get the second box}
+    \addtocounter{plt@date@temp@fouritem}{1}
+    \immediate\write16{begin to get the yyyy/mm/dd}
+    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
+    \immediate\write16{end to get the yyyy/mm/dd}
+    \plt@date@item[#1]
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 1}
+
+    \immediate\write16{get the third box}
+    \addtocounter{plt@date@temp@fouritem}{1}
+    \immediate\write16{begin to get the yyyy/mm/dd}
+    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
+    \immediate\write16{end to get the yyyy/mm/dd}
+    \plt@date@item[#1]
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 2}
+
+    \immediate\write16{get the forth box}
+    \addtocounter{plt@date@temp@fouritem}{2}
+    \immediate\write16{begin to get the yyyy/mm/dd}
+    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
+    \immediate\write16{end to get the yyyy/mm/dd}
+    \plt@date@item[#1]
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 3}
+
+    \immediate\write16{get the fivth box}
+    \addtocounter{plt@date@temp@fouritem}{6}
+    \immediate\write16{begin to get the yyyy/mm/dd}
+    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
+    \immediate\write16{end to get the yyyy/mm/dd}
+    \plt@date@item[#1]
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 4}
+}
+
+\newenvironment{pltstudylineenv}{%
+    \def\P{\plt@date@four@item}%
+    \setmydatenumber{plt@date@temp}{\the\year}{\the\month}{\the\day}%
+    \addtocounter{plt@date@temp}{11}%
+    \plt@date@toyyyymmdd{\theplt@date@temp}%
+    \begin{plttimelinebasic}
+        {\the\year}{\the\month}{\the\day}
+        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}
+        {NOW}{END}%
+}{%
+    \end{plttimelinebasic}%
+    \def\plt@data@four@item{\undefined}%
+}
+
+\newcommand{\pltstudyline}[4]{%
+    \immediate\write16{print plt study line.....}%
+    \begin{pltstudylineenv}%
+        \P{#1}{#2}{#3}{#4}%
+    \end{pltstudylineenv}%
+    \immediate\write16{.........................}%
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plt plan
