@@ -12,7 +12,7 @@ Run this command to get useful part.
 
 ```
 wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v0.1.0/peterlitsdoc.tar
-tar -xf peterlitsdoc.tar .
+tar -xf peterlitsdoc.tar
 python3 main.py
 make afterinstall
 ```

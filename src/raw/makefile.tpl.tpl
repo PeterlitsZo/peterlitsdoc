@@ -10,11 +10,11 @@ viewer = {%viewer to view the PDF file%}
 
 .PHONY: afterinstall
 afterinstall:
-    rm -rf TPL *.tpl main.py
-    echo "\\documentclass{peterlitsdoc}" > $(name).tex
-    echo "" >> $(name).tex
-    echo "\\begin{document}" >> $(name).tex
-    echo "\\end{document}" >> $(name).tex
+	rm -rf TPL *.tpl main.py
+	echo "\\documentclass{peterlitsdoc}" > $(name).tex
+	echo "" >> $(name).tex
+	echo "\\begin{document}" >> $(name).tex
+	echo "\\end{document}" >> $(name).tex
 
 .PHONY: clean
 clean:
