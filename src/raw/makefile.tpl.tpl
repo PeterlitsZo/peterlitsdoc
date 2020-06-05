@@ -1,3 +1,5 @@
+__filename__/ "../makefile.tpl"
+/------------------------------------------------------------------------------
 __filename__/ "makefile"
 the name of the main tex file(with out the extand)/ input
 viewer to view the PDF file/ input
@@ -5,6 +7,14 @@ viewer to view the PDF file/ input
 
 name = {%the name of the main tex file(with out the extand)%}
 viewer = {%viewer to view the PDF file%}
+
+.PHONY: afterinstall
+afterinstall:
+    rm -rf TPL *.tpl main.py
+    echo "\\documentclass{peterlitsdoc}" > $(name).tex
+    echo "" >> $(name).tex
+    echo "\\begin{document}" >> $(name).tex
+    echo "\\end{document}" >> $(name).tex
 
 .PHONY: clean
 clean:
@@ -14,13 +24,13 @@ clean:
 	-rm *.out
 
 .PHONY: run
-run2:
-	xelatex $(name).tex
+run:
+	lualatex $(name).tex
 
 .PHONY: run2
-run:
-	xelatex $(name).tex
-	xelatex $(name).tex
+run2:
+	lualatex $(name).tex
+	lualatex $(name).tex
 
 .PHONY: look
 look:

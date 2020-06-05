@@ -5,8 +5,8 @@
 
 
 % it should be work under XeTeX
-\RequirePackage{ifxetex}
-\RequireXeTeX
+\RequirePackage{iftex}
+\RequireLuaTeX
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,6 +42,7 @@
 \RequirePackage{ifthen}             % for logic
 \RequirePackage{settobox}           % for box
 \RequirePackage{datenumber}         % for date calc
+\RequirePackage{luacode}            % for run lua
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,12 +128,10 @@
         \setlength{\fboxsep}{0.3\fboxsep}
         \setlength{\plt@date@tempLength}{\plt@date@unit*\theplt@date@begsep}%
         \fill(\plt@date@tempLength,0) circle [radius=1pt];%
-        \write16{drawing box}%
         \node [#1] at (\the\plt@date@tempLength,0) {\parbox{%
             \widthof{\scriptsize#2-#3-#4}%
         }{%
-            \noindent\par%
-            \scriptsize#2-#3-#4\par%
+            \centering\scriptsize#2-#3-#4\par%
             \fbox{\parbox[t]{\widthof{\scriptsize#2-#3-#4}-2\fboxsep}%
                 {\scriptsize#5}%
             }%
@@ -167,70 +166,50 @@
     \end{plttimelinebasic}
 }
 
-\newcounter{plt@date@temp@fouritem}
-
 \newcommand{\plt@date@four@item}[5][below]{%
-    \immediate\write16{get the first box}
-    \setmydatenumber{plt@date@temp@fouritem}{#2}{#3}{#4}
-    \immediate\write16{begin to get the yyyy/mm/dd}
-    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
-    \immediate\write16{end to get the yyyy/mm/dd}
-    \plt@date@item[#1]
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, B}
-
-    \immediate\write16{get the second box}
-    \addtocounter{plt@date@temp@fouritem}{1}
-    \immediate\write16{begin to get the yyyy/mm/dd}
-    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
-    \immediate\write16{end to get the yyyy/mm/dd}
-    \plt@date@item[#1]
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 1}
-
-    \immediate\write16{get the third box}
-    \addtocounter{plt@date@temp@fouritem}{1}
-    \immediate\write16{begin to get the yyyy/mm/dd}
-    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
-    \immediate\write16{end to get the yyyy/mm/dd}
-    \plt@date@item[#1]
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 2}
-
-    \immediate\write16{get the forth box}
-    \addtocounter{plt@date@temp@fouritem}{2}
-    \immediate\write16{begin to get the yyyy/mm/dd}
-    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
-    \immediate\write16{end to get the yyyy/mm/dd}
-    \plt@date@item[#1]
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 3}
-
-    \immediate\write16{get the fivth box}
-    \addtocounter{plt@date@temp@fouritem}{6}
-    \immediate\write16{begin to get the yyyy/mm/dd}
-    \plt@date@toyyyymmdd{\theplt@date@temp@fouritem}
-    \immediate\write16{end to get the yyyy/mm/dd}
-    \plt@date@item[#1]
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}{#5, 4}
+    \luadirect{
+        date = {year=#2, month=#3, day=#4}
+        for index, step in ipairs({0, 1, 1, 2, 6}) do
+            % update the date table
+            date["day"] = date["day"] + step
+            date = os.date("*t", os.time(date))
+            % output the result
+            result = "\string\\plt@date@item[#1]{"..date["year"].."}"..
+                     "{"..date["month"].."}{"..date["day"].."}"..
+                     "{#5, "..index.."}"
+            print("run "..result..", done.")
+            tex.sprint("\string\\makeatletter"..result)
+        end
+    }
 }
 
 \newenvironment{pltstudylineenv}{%
     \def\P{\plt@date@four@item}%
-    \setmydatenumber{plt@date@temp}{\the\year}{\the\month}{\the\day}%
-    \addtocounter{plt@date@temp}{11}%
-    \plt@date@toyyyymmdd{\theplt@date@temp}%
-    \begin{plttimelinebasic}
-        {\the\year}{\the\month}{\the\day}
-        {\theplt@date@year}{\theplt@date@month}{\theplt@date@day}
-        {NOW}{END}%
+    \luadirect{
+        % calc the day and the end
+        dbegin = {year=\the\year, month=\the\month, day=\the\day}
+        dend = {year=\the\year, month=\the\month, day=\the\day}
+        dend["day"] = dend["day"] + 10
+        dend = os.date("*t", os.time(dend))
+        % output the result
+        tex.sprint("\string\\begin{plttimelinebasic}"..
+                   "{"..dbegin["year"].."}"..
+                   "{"..dbegin["month"].."}"..
+                   "{"..dbegin["day"].."}"..
+                   "{"..dend["year"].."}"..
+                   "{"..dend["month"].."}"..
+                   "{"..dend["day"].."}"..
+                   "{NOW}{END}")
+    }
 }{%
     \end{plttimelinebasic}%
     \def\plt@data@four@item{\undefined}%
 }
 
 \newcommand{\pltstudyline}[4]{%
-    \immediate\write16{print plt study line.....}%
     \begin{pltstudylineenv}%
         \P{#1}{#2}{#3}{#4}%
     \end{pltstudylineenv}%
-    \immediate\write16{.........................}%
 }
 
 
@@ -238,34 +217,31 @@
 % plt plan
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newlength{\plt@plan@first@height}
-\newsavebox{\plt@plan@first}
-\newlength{\plt@plan@secon@height}
-\newsavebox{\plt@plan@secon}
-\newlength{\plt@plan@third@height}
-\newsavebox{\plt@plan@third}
-\newlength{\plt@plan@forth@height}
-\newsavebox{\plt@plan@forth}
+\newbox{\plt@plan@first}
+\newbox{\plt@plan@secon}
+\newbox{\plt@plan@third}
+\newbox{\plt@plan@forth}
+
 \newlength{\plt@plan@maxheight}
 
 \def\plt@plan@item[#1]#2#3#4{{%
-    \setlength{\baselineskip}{0.5\baselineskip}%
-    \par\vspace*{\dimexpr-\parskip}\noindent%
     \sbox{\plt@plan@first}{\parbox[b]{0.1\textwidth}{\underline{\texttt{#2}}}}%
     \sbox{\plt@plan@secon}{\parbox[b]{0.2\textwidth}{#3}}%
     \sbox{\plt@plan@third}{\parbox[b]{0.1\textwidth}{\plttodo[#1]}}%
     \sbox{\plt@plan@forth}{\parbox[b]{0.6\textwidth}{#4}}%
-    \settoboxheight{\plt@plan@first@height}{\plt@plan@first}%
-    \settoboxheight{\plt@plan@secon@height}{\plt@plan@secon}%
-    \settoboxheight{\plt@plan@third@height}{\plt@plan@third}%
-    \settoboxheight{\plt@plan@forth@height}{\plt@plan@forth}%
-    \setlength{\plt@plan@maxheight}{\maxof{%
-        \maxof{\the\plt@plan@first@height}{\the\plt@plan@secon@height}%
-    }{%
-        \maxof{\the\plt@plan@third@height}{\the\plt@plan@forth@height}%
+    \setlength{\plt@plan@maxheight}{\luadirect{
+        % get the max length (height)
+        result = math.max(tex.getbox("plt@plan@first").height,
+                          tex.getbox("plt@plan@secon").height,
+                          tex.getbox("plt@plan@third").height,
+                          tex.getbox("plt@plan@forth").height)
+        % turn it into string
+        result = tostring(result / 65536).."pt"
+        % output the result
+        print("get the max lenght: "..result)
+        tex.sprint(result)
     }}%
-    \parbox[b][\the\plt@plan@maxheight+5pt][t]{\textwidth}{%
-        \vspace*{5pt}%
+    \parbox[b][\the\plt@plan@maxheight][t]{\textwidth}{%
         \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
             \centering\underline{\texttt{#2}}}%
         \parbox[b][\the\plt@plan@maxheight][t]{0.2\textwidth}{%
@@ -274,13 +250,17 @@
             \centering\plttodo[#1]}%
         \parbox[b][\the\plt@plan@maxheight][t]{0.6\textwidth}{%
             #4}%
-    }%
+    }\vspace*{1.4ex}\par%
 }}%
 
 \newenvironment{pltplan}{%
-    \noindent\rule{\textwidth}{0.4pt}%
+    \setlength{\parskip}{0pt}%
+    \setlength{\baselineskip}{0pt}%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \par\vspace*{\dimexpr-\parskip-0.2\baselineskip}\noindent%
+    \noindent\rule{\textwidth}{0.4pt}\vspace*{0.7ex}\par%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \noindent%
+    \parbox[b]{\textwidth}{%
         \parbox[b]{0.1\textwidth}{\centering\tikz[scale=0.9]{
             \draw [white] (0,0) rectangle (2ex,2ex);
             \draw (1ex,1ex) circle [radius=1ex];
@@ -304,20 +284,23 @@
             \draw [fill] (1ex,1ex) circle [radius=0.2pt];
             \draw [fill] (2ex,1ex) circle [radius=0.2pt];
         }}%
+    }\vspace*{0.7ex}\par%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \par\vspace*{\dimexpr-\parskip-0.2\baselineskip}\noindent%
-        {\pltgray\rule{\textwidth}{0.4pt}}%
+    \noindent%
+        {\pltgray\rule{\textwidth}{0.4pt}}\vspace*{1.4ex}\par%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \def\item{\plt@plan@item}%
+    \def\othe{\noindent\color{white!60!black}\plt@plan@item}%
+    \def\item{\noindent\pltblack\plt@plan@item}%
 }{%
-    \par\vspace*{\dimexpr-\parskip-0.5\baselineskip}\noindent%
-        \rule{\textwidth}{0.4pt}%
-    \par\vspace*{\dimexpr-\parskip-0.4\baselineskip}\noindent{%
+    \vspace*{\dimexpr-\parskip-0.5\baselineskip}\noindent%
+        \pltblack\rule{\textwidth}{0.4pt}\par%
+    \vspace*{\dimexpr-\parskip-0.4\baselineskip}\noindent{%
         \pltgray\footnotesize%
         注：\plttodo[ ]未完成，\plttodo[x]正在完成中，\plttodo[v]已经完成。%
-    }%
+    }\par%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \def\item\undefined%
+    \def\othe\undefined%
 }
 
 
@@ -605,7 +588,7 @@
 \newcommand{\pltred}{\color{red!65!black}}
 \newcommand{\pltblack}{\color{black}}
 \newcommand{\pltblue}{\color{blue!80!black!80!yellow}}
-\newcommand{\pltgray}{\color{white!30!black}}
+\newcommand{\pltgray}{\color{white!40!black}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

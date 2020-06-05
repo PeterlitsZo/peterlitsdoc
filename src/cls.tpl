@@ -1,7 +1,4 @@
-the cls name/ input
-__filename__/ "{%the cls name%}.cls"
-
-
+__filename__/ "peterlitsdoc.cls"
 /------------------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}
@@ -10,8 +7,8 @@ __filename__/ "{%the cls name%}.cls"
 
 
 % it should be work under XeTeX
-\RequirePackage{ifxetex}
-\RequireXeTeX
+\RequirePackage{iftex}
+\RequireLuaTeX
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,6 +42,16 @@ __filename__/ "{%the cls name%}.cls"
 \RequirePackage{hyperref}           % for better ref!
 \RequirePackage{float}              % for picture
 \RequirePackage{ifthen}             % for logic
+\RequirePackage{settobox}           % for box
+\RequirePackage{datenumber}         % for date calc
+\RequirePackage{luacode}            % for run lua
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hyperref setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hypersetup{hidelinks}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,6 +70,239 @@ __filename__/ "{%the cls name%}.cls"
         \setlength{\fboxsep}{0.2em}
         \item [\fbox{\small #1}] {#2}
     \end{basedescript}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt time line
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% temp counter
+\newcounter{plt@date@temp}
+\newcounter{plt@date@temp@}
+
+% begin and end counter
+\newcounter{plt@date@begin}
+\newcounter{plt@date@end}
+
+% year, month and day counter
+\newcounter{plt@date@year}
+\newcounter{plt@date@month}
+\newcounter{plt@date@day}
+
+% length - the unit length and the temp length
+\newlength{\plt@date@unit}
+\newlength{\plt@date@tempLength}
+
+% turn the counter into yyyy counter, mm counter and dd counter
+\newcommand{\plt@date@toyyyymmdd}[1]{%
+    \setmydatebynumber{#1}{plt@date@year}{plt@date@month}{plt@date@day}%
+}
+
+% set the end
+\newcommand{\plt@date@setend}[3]{%
+    \setmydatenumber{plt@date@end}{#1}{#2}{#3}%
+}
+
+% set the begin
+\newcommand{\plt@date@setbegin}[3]{%
+    \setmydatenumber{plt@date@begin}{#1}{#2}{#3}%
+}
+
+% get the unitlength
+\newcommand{\plt@date@getunit}{%
+    \setlength{\plt@date@unit}
+        {0.8\textwidth/(\theplt@date@end-\theplt@date@begin)}%
+}
+
+\newcounter{plt@date@begsep}
+\newcounter{plt@date@endsep}
+
+\newcommand{\plt@date@item}[5][below]{{%
+    %  this - begin %%%
+    \setmydatenumber{plt@date@begsep}{#2}{#3}{#4}%
+    \addtocounter{plt@date@begsep}{-\theplt@date@begin}%
+    %  this - end   %%%
+    \setmydatenumber{plt@date@endsep}{#2}{#3}{#4}%
+    \addtocounter{plt@date@endsep}{-\theplt@date@end}%
+    %  main logic   %%%
+    \ifnum\theplt@date@endsep < 1\ifnum\theplt@date@begsep > -1%
+        \setlength{\fboxsep}{0.3\fboxsep}
+        \setlength{\plt@date@tempLength}{\plt@date@unit*\theplt@date@begsep}%
+        \fill(\plt@date@tempLength,0) circle [radius=1pt];%
+        \node [#1] at (\the\plt@date@tempLength,0) {\parbox{%
+            \widthof{\scriptsize#2-#3-#4}%
+        }{%
+            \centering\scriptsize#2-#3-#4\par%
+            \fbox{\parbox[t]{\widthof{\scriptsize#2-#3-#4}-2\fboxsep}%
+                {\scriptsize#5}%
+            }%
+        }};
+    \fi\fi%
+}}
+
+% the basic timeline
+\newenvironment{plttimelinebasic}[8]{%
+    \par\noindent%
+    \def\D{\plt@date@item}
+    \def\higher{4em}
+    \plt@date@setbegin{#1}{#2}{#3}%
+    \plt@date@setend{#4}{#5}{#6}%
+    \plt@date@getunit%
+    \begin{center}
+    \begin{tikzpicture}
+    \draw (0,0) -- (0.8\textwidth,0);
+    \D[above]{#1}{#2}{#3}{#7}
+    \D[above]{#4}{#5}{#6}{#8}
+}{%
+    \end{tikzpicture}
+    \end{center}
+    \def\D{\undefined}%
+    \def\higher{\undefined}%
+}
+
+\newenvironment{plttimeline}[3]{%
+    \begin{plttimelinebasic}
+        {\the\year}{\the\month}{\the\day}{#1}{#2}{#3}{NOW}{END}
+}{%
+    \end{plttimelinebasic}
+}
+
+\newcommand{\plt@date@four@item}[5][below]{%
+    \luadirect{
+        date = {year=#2, month=#3, day=#4}
+        for index, step in ipairs({0, 1, 1, 2, 6}) do
+            % update the date table
+            date["day"] = date["day"] + step
+            date = os.date("*t", os.time(date))
+            % output the result
+            result = "\string\\plt@date@item[#1]{"..date["year"].."}"..
+                     "{"..date["month"].."}{"..date["day"].."}"..
+                     "{#5, "..index.."}"
+            print("run "..result..", done.")
+            tex.sprint("\string\\makeatletter"..result)
+        end
+    }
+}
+
+\newenvironment{pltstudylineenv}{%
+    \def\P{\plt@date@four@item}%
+    \luadirect{
+        % calc the day and the end
+        dbegin = {year=\the\year, month=\the\month, day=\the\day}
+        dend = {year=\the\year, month=\the\month, day=\the\day}
+        dend["day"] = dend["day"] + 10
+        dend = os.date("*t", os.time(dend))
+        % output the result
+        tex.sprint("\string\\begin{plttimelinebasic}"..
+                   "{"..dbegin["year"].."}"..
+                   "{"..dbegin["month"].."}"..
+                   "{"..dbegin["day"].."}"..
+                   "{"..dend["year"].."}"..
+                   "{"..dend["month"].."}"..
+                   "{"..dend["day"].."}"..
+                   "{NOW}{END}")
+    }
+}{%
+    \end{plttimelinebasic}%
+    \def\plt@data@four@item{\undefined}%
+}
+
+\newcommand{\pltstudyline}[4]{%
+    \begin{pltstudylineenv}%
+        \P{#1}{#2}{#3}{#4}%
+    \end{pltstudylineenv}%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plt plan
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newbox{\plt@plan@first}
+\newbox{\plt@plan@secon}
+\newbox{\plt@plan@third}
+\newbox{\plt@plan@forth}
+
+\newlength{\plt@plan@maxheight}
+
+\def\plt@plan@item[#1]#2#3#4{{%
+    \sbox{\plt@plan@first}{\parbox[b]{0.1\textwidth}{\underline{\texttt{#2}}}}%
+    \sbox{\plt@plan@secon}{\parbox[b]{0.2\textwidth}{#3}}%
+    \sbox{\plt@plan@third}{\parbox[b]{0.1\textwidth}{\plttodo[#1]}}%
+    \sbox{\plt@plan@forth}{\parbox[b]{0.6\textwidth}{#4}}%
+    \setlength{\plt@plan@maxheight}{\luadirect{
+        % get the max length (height)
+        result = math.max(tex.getbox("plt@plan@first").height,
+                          tex.getbox("plt@plan@secon").height,
+                          tex.getbox("plt@plan@third").height,
+                          tex.getbox("plt@plan@forth").height)
+        % turn it into string
+        result = tostring(result / 65536).."pt"
+        % output the result
+        print("get the max lenght: "..result)
+        tex.sprint(result)
+    }}%
+    \parbox[b][\the\plt@plan@maxheight][t]{\textwidth}{%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
+            \centering\underline{\texttt{#2}}}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.2\textwidth}{%
+            #3}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.1\textwidth}{%
+            \centering\plttodo[#1]}%
+        \parbox[b][\the\plt@plan@maxheight][t]{0.6\textwidth}{%
+            #4}%
+    }\vspace*{1.4ex}\par%
+}}%
+
+\newenvironment{pltplan}{%
+    \setlength{\parskip}{0pt}%
+    \setlength{\baselineskip}{0pt}%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \noindent\rule{\textwidth}{0.4pt}\vspace*{0.7ex}\par%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \noindent%
+    \parbox[b]{\textwidth}{%
+        \parbox[b]{0.1\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw (1ex,1ex) circle [radius=1ex];
+            \draw (1ex,1.8ex) -- (1ex,1ex) -- (1.8ex,1ex);
+        }}%
+        \parbox[b]{0.2\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw [fill] (0,0.2ex) circle [radius=0.2pt];
+            \draw [fill] (0,1ex) circle [radius=0.2pt];
+            \draw [fill] (0,1.8ex) circle [radius=0.2pt];
+            \draw (0.4ex,0.2ex) -- (2ex,0.2ex);
+            \draw (0.4ex,1ex) -- (2ex,1ex);
+            \draw (0.4ex,1.8ex) -- (2ex,1.8ex);
+        }}%
+        \parbox[b]{0.1\textwidth}{\centering%
+            \plttodo[v]%
+        }%
+        \parbox[b]{0.6\textwidth}{\centering\tikz[scale=0.9]{
+            \draw [white] (0,0) rectangle (2ex,2ex);
+            \draw [fill] (0ex,1ex) circle [radius=0.2pt];
+            \draw [fill] (1ex,1ex) circle [radius=0.2pt];
+            \draw [fill] (2ex,1ex) circle [radius=0.2pt];
+        }}%
+    }\vspace*{0.7ex}\par%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \noindent%
+        {\pltgray\rule{\textwidth}{0.4pt}}\vspace*{1.4ex}\par%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \def\othe{\noindent\color{white!60!black}\plt@plan@item}%
+    \def\item{\noindent\pltblack\plt@plan@item}%
+}{%
+    \vspace*{\dimexpr-\parskip-0.5\baselineskip}\noindent%
+        \pltblack\rule{\textwidth}{0.4pt}\par%
+    \vspace*{\dimexpr-\parskip-0.4\baselineskip}\noindent{%
+        \pltgray\footnotesize%
+        注：\plttodo[ ]未完成，\plttodo[x]正在完成中，\plttodo[v]已经完成。%
+    }\par%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \def\item\undefined%
+    \def\othe\undefined%
 }
 
 
@@ -190,13 +430,13 @@ __filename__/ "{%the cls name%}.cls"
     \if\space#1\relax% if the input is a space
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{\draw (0,0) rectangle (2ex,2ex);}
         }
 	\else\if v#1\relax% if the char is 'v'
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (2ex,1.5ex) -- (2ex,2ex) -- (0,2ex) -- (0,0)
                       -- (2ex,0) -- (2ex,0.5ex);
@@ -206,7 +446,7 @@ __filename__/ "{%the cls name%}.cls"
     \else\if x#1\relax% if the char is 'x'
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (1.5ex,2ex) -- (0,2ex) -- (0,0) -- (2ex,0)
                       -- (2ex,0.5ex);
@@ -217,10 +457,17 @@ __filename__/ "{%the cls name%}.cls"
     \else
         \normalfont
         \hspace{0.1ex}
-        \parbox[c]{2.8ex}{
+        \parbox[b]{2.8ex}{
             \tikz[scale=0.9]{
                 \draw (0,0) rectangle (2ex,2ex);
-                \node at (1ex,1ex) {?};
+                \draw (1ex, 0.5ex) -- (1ex,0.75ex)
+                      .. controls (1ex,1ex) and (1.5ex,1ex) ..
+                          (1.5ex,1.2ex)
+                      .. controls (1.5ex,1.75ex) and (1.25ex,1.75ex) ..
+                          (1ex,1.75ex)
+                      .. controls (0.75ex,1.75ex) and (0.5ex,1.75ex) ..
+                          (0.5ex,1.2ex);
+                \fill (1ex,0.25ex) circle [radius=0.1ex];
             }
         }
     \fi\fi\fi
@@ -343,7 +590,7 @@ __filename__/ "{%the cls name%}.cls"
 \newcommand{\pltred}{\color{red!65!black}}
 \newcommand{\pltblack}{\color{black}}
 \newcommand{\pltblue}{\color{blue!80!black!80!yellow}}
-\newcommand{\pltgray}{\color{white!30!black}}
+\newcommand{\pltgray}{\color{white!40!black}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -386,4 +633,6 @@ __filename__/ "{%the cls name%}.cls"
 \titlespacing{\section}{0pt}{7em}{2em}
 \titlespacing{\subsection}{0pt}{3em}{1em}
 \titlespacing{\subsubsection}{0pt}{1em}{0em}
+
+
 

@@ -11,11 +11,14 @@ Get `usage.pdf` for more infomation.
 Run this command to get useful part.
 
 ```
-wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v0.0.1/install.py
-python3 install.py
+wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v0.1.0/peterlitsdoc.tar
+tar -xf peterlitsdoc.tar .
+python3 main.py
+make afterinstall
 ```
 
-运行上面的命令，生成`cls`文件（格式定义）和`makefile`文件（快捷命令）。
+运行上面的命令，下载、解压、从模板生成文件、清理文件。
+生成`cls`文件（格式定义）和`makefile`文件（快捷命令）。
 
 ## About makefile
 
@@ -26,11 +29,12 @@ Enter `make <command>` for:
 
 ```
 <command>:
-clean - clean all files useless - 清除所有没有用的文件
-run   - run xelatex to get the pdf file.
-run2  - run twice
-look  - use viewer to look your pdf file
-fuck  - `run` and then `look`
-fuck2 - `run2` and then `look`
+afterinstall- clean the .tpl file and touch the $(name).tex
+clean       - clean all files useless - 清除所有没有用的文件
+run         - run xelatex to get the pdf file.
+run2        - run twice
+look        - use viewer to look your pdf file
+fuck        - `run` and then `look`
+fuck2       - `run2` and then `look`
 ```
 
