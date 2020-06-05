@@ -3,4 +3,7 @@
 *.toc
 *.out
 
+cls.tpl
+makefile.tpl
+
 peterlitsdoc.tar
