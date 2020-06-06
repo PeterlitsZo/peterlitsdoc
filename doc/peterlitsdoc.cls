@@ -75,10 +75,6 @@
 % plt time line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% temp counter
-\newcounter{plt@date@temp}
-\newcounter{plt@date@temp@}
-
 % begin and end counter
 \newcounter{plt@date@begin}
 \newcounter{plt@date@end}
@@ -91,11 +87,6 @@
 % length - the unit length and the temp length
 \newlength{\plt@date@unit}
 \newlength{\plt@date@tempLength}
-
-% turn the counter into yyyy counter, mm counter and dd counter
-\newcommand{\plt@date@toyyyymmdd}[1]{%
-    \setmydatebynumber{#1}{plt@date@year}{plt@date@month}{plt@date@day}%
-}
 
 % set the end
 \newcommand{\plt@date@setend}[3]{%
@@ -171,11 +162,11 @@
         date = {year=#2, month=#3, day=#4}
         for index, step in ipairs({0, 1, 1, 2, 6}) do
             % update the date table
-            date["day"] = date["day"] + step
+            date.day = date.day + step
             date = os.date("*t", os.time(date))
             % output the result
-            result = "\string\\plt@date@item[#1]{"..date["year"].."}"..
-                     "{"..date["month"].."}{"..date["day"].."}"..
+            result = "\string\\plt@date@item[#1]{"..date.year.."}"..
+                     "{"..date.month.."}{"..date.day.."}"..
                      "{#5, "..index.."}"
             print("run "..result..", done.")
             tex.sprint("\string\\makeatletter"..result)
@@ -189,16 +180,16 @@
         % calc the day and the end
         dbegin = {year=\the\year, month=\the\month, day=\the\day}
         dend = {year=\the\year, month=\the\month, day=\the\day}
-        dend["day"] = dend["day"] + 10
+        dend.day = dend.day + 10
         dend = os.date("*t", os.time(dend))
         % output the result
         tex.sprint("\string\\begin{plttimelinebasic}"..
-                   "{"..dbegin["year"].."}"..
-                   "{"..dbegin["month"].."}"..
-                   "{"..dbegin["day"].."}"..
-                   "{"..dend["year"].."}"..
-                   "{"..dend["month"].."}"..
-                   "{"..dend["day"].."}"..
+                   "{"..dbegin.year.."}"..
+                   "{"..dbegin.month.."}"..
+                   "{"..dbegin.day.."}"..
+                   "{"..dend.year.."}"..
+                   "{"..dend.month.."}"..
+                   "{"..dend.day.."}"..
                    "{NOW}{END}")
     }
 }{%
@@ -257,7 +248,7 @@
     \setlength{\parskip}{0pt}%
     \setlength{\baselineskip}{0pt}%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \noindent\rule{\textwidth}{0.4pt}\vspace*{0.7ex}\par%
+    \par\vspace*{0.7ex}\noindent\rule{\textwidth}{0.4pt}\vspace*{0.7ex}\par%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \noindent%
     \parbox[b]{\textwidth}{%
@@ -297,7 +288,7 @@
     \vspace*{\dimexpr-\parskip-0.4\baselineskip}\noindent{%
         \pltgray\footnotesize%
         注：\plttodo[ ]未完成，\plttodo[x]正在完成中，\plttodo[v]已经完成。%
-    }\par%
+    }\par\vspace*{0.7ex}\par%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \def\item\undefined%
     \def\othe\undefined%

@@ -1,9 +1,13 @@
 \documentclass{peterlitsdoc}
+\directlua{require("drawboxes")}
+\usepackage{graphicx,atbegshi}
+
 \newcommand{\vb}{\verb}
 
 \title{\vb|peterlitsdoc|文档类}
 \author{Peterlits Zo}
 
+\AtBeginShipout{\directlua{drawboxes.visual_debug()}}
 \begin{document}
 
 \maketitle
