@@ -1,4 +1,4 @@
-mainpart = cls.tpl makefile.tpl main.py TPL
+mainpart = cls.tpl makefile.tpl main.py drawboxes.lua TPL
 
 .PHONY:makesrc
 makesrc:

@@ -1,5 +1,4 @@
 
-
 class NeedInput(object):
     pass
 
@@ -20,12 +19,20 @@ class Holder(object):
     def _dealarg(self, argument: str) -> str or NeedInput:
         """this will make a string be a str or just a NeedInput, I assert that
         the NeedInput's format is like: input, and the str is like "str"."""
+        for key in self._arglist:
+            argument = argument.replace(
+                "{%" + key + "%}", self._arglist[key]
+            )
+        for key in self._arglist:
+            argument = argument.replace(
+                "{!" + key + "!}", repr(self._arglist[key])
+            )
         if argument == "input":
             return NeedInput()
         else:
             return str(eval(argument))
 
-    def _lineparser(self) -> (bool, str, ):
+    def _lineparser(self) -> (bool, str, str):
         """this function will parser a line a the begining."""
         argline = self._file.readline()
         if argline.startswith("/"):
@@ -40,12 +47,13 @@ class Holder(object):
             argvalue = self._dealarg(self._cleararg(argvalue))
         return flag, argname, argvalue
 
-    def _parser(self):
+    def _parser(self) -> str:
         """this function will parser arglist line by line."""
         flag = True
         flag, argname, argvalue = self._lineparser()
         while(flag):
             self._arglist[argname] = argvalue
+            yield argname
             flag, argname, argvalue = self._lineparser()
 
         if "__filename__" in self._arglist:
@@ -53,16 +61,13 @@ class Holder(object):
 
     def _input(self):
         """ this will clear all NeedInput argline"""
-        self._parser()
-        arglist = self._arglist
-        for key in self._arglist:
+        arglist = {}
+        for key in self._parser():
             # loop the arglist and make all need input argument be inputed
             value = self._arglist[key]
             if type(value) == NeedInput:
-                value = input("\n PLEASE ENTER:\n     " + key + "\n > ")
-            arglist[key] = value
+                self._arglist[key] = input("\n PLEASE ENTER:\n     " + key + "\n > ")
         # make it be a inputed arglist
-        self._arglist = arglist
 
     def _make(self):
         #assert that the pointer is now under the arglines
@@ -70,6 +75,10 @@ class Holder(object):
         for key in self._arglist:
             self._content = self._content.replace(
                 "{%" + key + "%}", self._arglist[key]
+            )
+        for key in self._arglist:
+            self._content = self._content.replace(
+                "{!" + key + "!}", repr(self._arglist[key])
             )
 
     def interter(self):

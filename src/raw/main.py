@@ -9,3 +9,6 @@ tpl_file.interter()
 
 tpl_file = TPL.holder.Holder("cls.tpl.tpl")
 tpl_file.interter()
+
+tpl_file = TPL.holder.Holder("drawboxes.lua.tpl")
+tpl_file.interter()
