@@ -1,35 +1,35 @@
 __filename__/ "../makefile.tpl"
 /------------------------------------------------------------------------------
-_/
+_/                                                                           ""
 _/  "--------Meta data--------------------------------------------------------"
-_/
+_/                                                                           ""
     __filename__/ "makefile"
-_/
+_/                                                                           ""
     the name of the main tex file(with out the extand)/ input
-_/
+_/                                                                           ""
     viewer to view the PDF file/ input
-_/
+_/                                                                           ""
 _/  "--------Debug mode-------------------------------------------------------"
-_/
+_/                                                                           ""
     need debug(enter [y or n])/ input
-_/
+_/                                                                           ""
 _/  "--------if need debug----------------------------------------------------"
-_/
+_/                                                                           ""
     if need debug part 1/ "echo '\\directlua{require(\"drawboxes\")}'>> $(name).tex"
-    if need debug part 2/ "\n\techo '\\usepackage{graphicx,atbeginshi}' >> $(name).tex"
+    if need debug part 2/ "\n\techo '\\usepackage{graphicx,atbegshi}' >> $(name).tex"
     if need debug part 3/ "\n\techo '' >> $(name).tex"
     if need debug part 4/ "\n\techo '\\AtBeginShipout{\\directlua{drawboxes.vi"
     if need debug part 4/ {!if need debug part 4!}"sual_debug()}}' >> $(name).tex"
-_/
+_/                                                                           ""
     if need debug/                 {!if need debug part 1!}
     if need debug/{!if need debug!}{!if need debug part 2!}
     if need debug/{!if need debug!}{!if need debug part 3!}
     if need debug/{!if need debug!}{!if need debug part 4!}
-_/
+_/                                                                           ""
 _/  "--------if do not need debug---------------------------------------------"
-_/
+_/                                                                           ""
     if do not need debug / "echo '' >> $(name).tex" 
-_/
+_/                                                                           ""
     debug part/ {!if need debug!} if {!need debug(enter [y or n])!} == "y" else {!if do not need debug!}
     nondebug remove/ "drawboxes.lua" if {!need debug(enter [y or n]!} != "y" else ""
 /------------------------------------------------------------------------------
