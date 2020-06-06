@@ -7,7 +7,7 @@
 \title{\vb|peterlitsdoc|文档类}
 \author{Peterlits Zo}
 
-\AtBeginShipout{\directlua{drawboxes.visual_debug()}}
+% \AtBeginShipout{\directlua{drawboxes.visual_debug()}}
 \begin{document}
 
 \maketitle
@@ -42,6 +42,24 @@
 来改进（欢迎$\sim$）。
 
 基于GPL发布。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{peterlitsdoc的获取}
+
+运行命令：
+\begin{lstlisting}
+wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v<version>/peterlitsdoc.tar
+tar -xf peterlitsdoc.tar
+python3 main.py
+make afterinstall
+\end{lstlisting}
+
+可以拉取到最新的peterlitsdoc环境，包含一个简单的\vb|tex|文件，
+一个\vb|peterlitsdoc|文件和一个用来构建的\vb|makefile|文件。
+
+（未完）
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,12 +382,12 @@ fn main() {
 
 \subsection{编译环境}
 
-作为一个面向中文环境的包，规定了使用XeLaTeX来作为默认的编
+作为一个面向中文环境的包，规定了使用LuaLaTeX来作为默认的编
 译环境，如果不使用，可能会报错哦。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\pltendant{2020}{5}{26}{Peterlits Zo}
+\pltendant{\the\year}{\the\month}{\the\day}{Peterlits Zo}
 
 \end{document}
 
