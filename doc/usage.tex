@@ -48,6 +48,8 @@
 
 \section{peterlitsdoc的获取}
 
+\subsection{Linux}
+
 运行命令：
 \begin{lstlisting}
 wget https://github.com/PeterlitsZo/peterlitsdoc/releases/download/v<version>/peterlitsdoc.tar
@@ -60,6 +62,28 @@ make afterinstall
 一个\vb|peterlitsdoc|文件和一个用来构建的\vb|makefile|文件。
 
 （未完）
+
+\subsection{Windows}
+
+有在Windows下工作的朋友对我的文件包感到好奇，所以特意写了一个Windows下
+用户的安装步骤。我发布的主体是运行在\LaTeX{}上的文件包，所以需要安装\LaTeX{}，
+推荐去清华那里下载：%
+\url{https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/Images/}。
+（那个3个G的就是）
+
+另外，我还提供了一个\vb|python|工具来帮助初始化，可以去%
+\url{https://github.com/PeterlitsZo/peterlitsdoc/releases}里
+下载最新的\vb|peterlitsdoc.zip|，然后用\vb|python|运行\vb|main.py|。
+
+如果觉得有点麻烦的话，去%
+\url{https://github.com/PeterlitsZo/peterlitsdoc/blob/master/src/raw/peterlitsdoc.cls}
+获取这个文件也是不错的，毕竟我的python小工具生成的\vb|makefile|文件，
+Windows用户也用不了。
+
+另外，对于没有用过\LaTeX{}的人而言，可以看看本文档的源代码：%
+\url{https://github.com/PeterlitsZo/peterlitsdoc/blob/master/doc/usage.tex}，
+照猫画虎，依葫芦画瓢。也建议读一读著名的\vb|lshort|：%
+\url{chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/http://mirrors.ibiblio.org/CTAN/info/lshort/chinese/lshort-zh-cn.pdf}。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
